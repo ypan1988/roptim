@@ -1,0 +1,14 @@
+Package: roptim
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Author: Yi Pan [aut, cre]
+Maintainer: Yi Pan <ypan1988@gmail.com>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: GPL (>= 2)
+Encoding: UTF-8
+LazyData: true
+SystemRequirements: C++11
+Imports: Rcpp (>= 0.12.14)
+LinkingTo: Rcpp, RcppArmadillo
