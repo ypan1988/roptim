@@ -89,8 +89,10 @@ class Roptim {
         method_ != "L-BFGS-B" && method_ != "SANN")
       Rcpp::stop("Roptim::Roptim(): unknown 'method'");
 
-    if (method_ == "Nelder-Mead") control.maxit = 500;
-    if (method_ == "SANN") {
+    // Sets default value for maxit & REPORT (which depend on method)
+    if (method_ == "Nelder-Mead") {
+      control.maxit = 500;
+    } else if (method_ == "SANN") {
       control.maxit = 10000;
       control.REPORT = 100;
     }
@@ -103,7 +105,7 @@ class Roptim {
     else
       method_ = method;
 
-    // Sets control defaults
+    // Sets default value for maxit & REPORT (which depend on method)
     if (method_ == "Nelder-Mead") {
       control.maxit = 500;
       control.REPORT = 10;
@@ -143,7 +145,7 @@ inline void Roptim<Derived>::print() const {
   Rcpp::Rcout << "\n.value()\n" << val_ << std::endl;
   Rcpp::Rcout << "\n.fncount()\n" << fncount_ << std::endl;
 
-  if (method_ == "Nelder-Mead")
+  if (method_ == "Nelder-Mead" || method_ == "SANN")
     Rcpp::Rcout << "\n.grcount()\nNA" << std::endl;
   else
     Rcpp::Rcout << "\n.grcount()\n" << grcount_ << std::endl;
@@ -158,8 +160,10 @@ template <typename Derived>
 inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
   int debug = 0;
 
+  // PART 1: optim()
+
   // Checks if lower and upper bounds is used
-  if (!lower_.is_empty() || !upper_.is_empty() && method_ != "L-BFGS-B") {
+  if ((!lower_.is_empty() || !upper_.is_empty()) && method_ != "L-BFGS-B") {
     Rcpp::warning("bounds can only be used with method L-BFGS-B");
     method_ = "L-BFGS-B";
   }
@@ -167,7 +171,13 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
   // Sets the parameter size
   int npar = par.size();
 
-  // Checks on trace
+  // Sets default value for parscale & ndeps (which depend on npar)
+  if (control.parscale.is_empty())
+    control.parscale = arma::ones<arma::vec>(npar);
+  if (control.ndeps.is_empty())
+    control.ndeps = arma::ones<arma::vec>(npar) * 1e-3;
+
+  // Checks control variable trace
   if (control.trace < 0)
     Rcpp::warning("read the documentation for 'trace' more carefully");
   else if (method_ == "SANN" && control.trace && control.REPORT == 0)
@@ -181,29 +191,32 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
   if (npar == 1 && method_ == "Nelder-Mead" && control.warn_1d_NelderMead)
     Rcpp::warning("one-dimensional optimization by Nelder-Mead is unreliable");
 
-  // Sets defaults value for lower_
+  // Sets default value for lower_
   if (lower_.is_empty()) {
     lower_ = arma::zeros<arma::vec>(npar);
     lower_.for_each([](arma::mat::elem_type &val) { val = R_NegInf; });
   }
-  // Sets defaults value for upper_
+  // Sets default value for upper_
   if (upper_.is_empty()) {
     upper_ = arma::zeros<arma::vec>(npar);
     upper_.for_each([](arma::mat::elem_type &val) { val = R_PosInf; });
   }
 
-  if (control.parscale.is_empty())
-    control.parscale = arma::ones<arma::vec>(npar);
-  if (control.ndeps.is_empty())
-    control.ndeps = arma::ones<arma::vec>(npar) * 1e-3;
+  // PART 2: C_optim()
+
+  func.os.usebounds_ = 0;
+  func.os.fnscale_ = control.fnscale;
+  func.os.parscale_ = control.parscale;
+
+  if (control.ndeps.size() != npar)
+    Rcpp::stop("'ndeps' is of the wrong length");
+  else
+    func.os.ndeps_ = control.ndeps;
 
   arma::vec dpar = arma::zeros<arma::vec>(npar);
   arma::vec opar = arma::zeros<arma::vec>(npar);
-  dpar = par / control.parscale;
 
-  func.os.ndeps_ = control.ndeps;
-  func.os.fnscale_ = control.fnscale;
-  func.os.parscale_ = control.parscale;
+  dpar = par / control.parscale;
 
   if (method_ == "Nelder-Mead") {
     if (debug) std::cout << "Nelder-Mead:" << std::endl;
@@ -219,7 +232,7 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
     if (debug) std::cout << "SANN:" << std::endl;
 
     int trace = control.trace;
-    if (control.trace) trace = control.REPORT;
+    if (trace) trace = control.REPORT;
 
     if (control.tmax == NA_INTEGER || control.tmax < 1)
       Rcpp::stop("'tmax' is not a positive integer");
@@ -282,6 +295,7 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
     Rcpp::stop("Roptim::minimize(): unknown 'method'");
 
   par_ = par;
+  val_ *= func.os.fnscale_;
 
   if (hessian_flag_) func.ApproximateHessian(par_, hessian_);
 }

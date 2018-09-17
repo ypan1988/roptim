@@ -17,6 +17,22 @@ example1_rosen_nograd_bfgs <- function() {
     invisible(.Call('_roptim_example1_rosen_nograd_bfgs', PACKAGE = 'roptim'))
 }
 
+example2_travelling_salesman <- function() {
+    invisible(.Call('_roptim_example2_travelling_salesman', PACKAGE = 'roptim'))
+}
+
+example3_flb_25_dims_box_con <- function() {
+    invisible(.Call('_roptim_example3_flb_25_dims_box_con', PACKAGE = 'roptim'))
+}
+
+example4_wild_fun <- function() {
+    invisible(.Call('_roptim_example4_wild_fun', PACKAGE = 'roptim'))
+}
+
+example1_rosen_sann <- function() {
+    invisible(.Call('_roptim_example1_rosen_sann', PACKAGE = 'roptim'))
+}
+
 rcpp_hello <- function() {
     .Call('_roptim_rcpp_hello', PACKAGE = 'roptim')
 }
