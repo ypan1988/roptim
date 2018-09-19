@@ -17,8 +17,8 @@ example1_rosen_nograd_bfgs <- function() {
     invisible(.Call('_roptim_example1_rosen_nograd_bfgs', PACKAGE = 'roptim'))
 }
 
-example2_travelling_salesman <- function() {
-    invisible(.Call('_roptim_example2_travelling_salesman', PACKAGE = 'roptim'))
+example2_sann_tsp <- function(eurodistmat, x) {
+    .Call('_roptim_example2_sann_tsp', PACKAGE = 'roptim', eurodistmat, x)
 }
 
 example3_flb_25_dims_box_con <- function() {

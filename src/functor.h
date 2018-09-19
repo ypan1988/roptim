@@ -28,6 +28,7 @@ struct OptStruct {
   arma::vec parscale_;    // scaling for parameters
   int usebounds_ = 0;
   arma::vec lower_, upper_;
+  bool sann_use_custom_function_ = false;
 };
 
 class Functor {

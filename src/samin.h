@@ -38,7 +38,7 @@ inline void genptry(int n, double *p, double *ptry, double scale, void *ex) {
   OptStruct OS = static_cast<Functor *>(ex)->os;
   PROTECT_INDEX ipx;
 
-  if (OS.has_grad_) {
+  if (OS.sann_use_custom_function_) {
     /* user defined generation of candidate point */
     PROTECT(x = Rf_allocVector(REALSXP, n));
     arma::vec x_copy = arma::zeros<arma::vec>(n);
