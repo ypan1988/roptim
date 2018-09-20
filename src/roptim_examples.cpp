@@ -1,5 +1,6 @@
-#include <algorithm>
 #include <cmath>
+
+#include <algorithm>
 
 #include <RcppArmadillo.h>
 #include "roptim.h"
@@ -292,7 +293,7 @@ class TSP : public Functor {
 //'
 //'## corresponding C++ implementation:
 //'set.seed(10)  # chosen to get a good soln relatively quickly
-//'res <- example2_sann_tsp(eurodistmat, sq)
+//'res <- example2_tsp_sann(eurodistmat, sq)
 //'
 //'tspres <- loc[res$par,]
 //'plot(x, y, type = "n", asp = 1, xlab = "", ylab = "",
@@ -302,7 +303,7 @@ class TSP : public Functor {
 //'text(x, y, labels(eurodist), cex = 0.8)
 //'@export
 // [[Rcpp::export]]
-Rcpp::List example2_sann_tsp(arma::mat distmat, arma::vec x) {
+Rcpp::List example2_tsp_sann(arma::mat distmat, arma::vec x) {
 
   TSP dist(distmat);
   Roptim<TSP> opt("SANN");
@@ -342,6 +343,15 @@ class Flb : public Functor {
 
 //'@title Example 3: Minimize a function using L-BFGS-B with 25-dimensional box constrained
 //'@description Minimize a function using L-BFGS-B with 25-dimensional box constrained.
+//'@examples
+//'flb <- function(x)
+//'{ p <- length(x); sum(c(1, rep(4, p-1)) * (x - c(1, x[-p])^2)^2) }
+//'## 25-dimensional box constrained
+//'optim(rep(3, 25), flb, NULL, method = "L-BFGS-B",
+//'      lower = rep(2, 25), upper = rep(4, 25)) # par[24] is *not* at boundary
+//'
+//' ## corresponding C++ implementation:
+//' example3_flb_25_dims_box_con()
 //'@export
 // [[Rcpp::export]]
 void example3_flb_25_dims_box_con() {
@@ -377,6 +387,21 @@ class Fw : public Functor {
 
 //'@title Example 4: Minimize a "wild" function using SANN and BFGS
 //'@description Minimize a "wild" function using SANN and BFGS.
+//'@examples
+//'## "wild" function , global minimum at about -15.81515
+//'fw <- function (x)
+//'  10*sin(0.3*x)*sin(1.3*x^2) + 0.00001*x^4 + 0.2*x+80
+//'plot(fw, -50, 50, n = 1000, main = "optim() minimising 'wild function'")
+//'
+//'res <- optim(50, fw, method = "SANN",
+//'             control = list(maxit = 20000, temp = 20, parscale = 20))
+//'res
+//'## Now improve locally {typically only by a small bit}:
+//'(r2 <- optim(res$par, fw, method = "BFGS"))
+//'points(r2$par,  r2$value,  pch = 8, col = "red", cex = 2)
+//'
+//' ## corresponding C++ implementation:
+//' example4_wild_fun()
 //'@export
 // [[Rcpp::export]]
 void example4_wild_fun() {

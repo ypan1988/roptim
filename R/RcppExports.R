@@ -129,7 +129,7 @@ example1_rosen_nograd_bfgs <- function() {
 #'
 #'## corresponding C++ implementation:
 #'set.seed(10)  # chosen to get a good soln relatively quickly
-#'res <- example2_sann_tsp(eurodistmat, sq)
+#'res <- example2_tsp_sann(eurodistmat, sq)
 #'
 #'tspres <- loc[res$par,]
 #'plot(x, y, type = "n", asp = 1, xlab = "", ylab = "",
@@ -138,12 +138,21 @@ example1_rosen_nograd_bfgs <- function() {
 #'       angle = 10, col = "red")
 #'text(x, y, labels(eurodist), cex = 0.8)
 #'@export
-example2_sann_tsp <- function(distmat, x) {
-    .Call('_roptim_example2_sann_tsp', PACKAGE = 'roptim', distmat, x)
+example2_tsp_sann <- function(distmat, x) {
+    .Call('_roptim_example2_tsp_sann', PACKAGE = 'roptim', distmat, x)
 }
 
 #'@title Example 3: Minimize a function using L-BFGS-B with 25-dimensional box constrained
 #'@description Minimize a function using L-BFGS-B with 25-dimensional box constrained.
+#'@examples
+#'flb <- function(x)
+#'{ p <- length(x); sum(c(1, rep(4, p-1)) * (x - c(1, x[-p])^2)^2) }
+#'## 25-dimensional box constrained
+#'optim(rep(3, 25), flb, NULL, method = "L-BFGS-B",
+#'      lower = rep(2, 25), upper = rep(4, 25)) # par[24] is *not* at boundary
+#'
+#' ## corresponding C++ implementation:
+#' example3_flb_25_dims_box_con()
 #'@export
 example3_flb_25_dims_box_con <- function() {
     invisible(.Call('_roptim_example3_flb_25_dims_box_con', PACKAGE = 'roptim'))
@@ -151,6 +160,21 @@ example3_flb_25_dims_box_con <- function() {
 
 #'@title Example 4: Minimize a "wild" function using SANN and BFGS
 #'@description Minimize a "wild" function using SANN and BFGS.
+#'@examples
+#'## "wild" function , global minimum at about -15.81515
+#'fw <- function (x)
+#'  10*sin(0.3*x)*sin(1.3*x^2) + 0.00001*x^4 + 0.2*x+80
+#'plot(fw, -50, 50, n = 1000, main = "optim() minimising 'wild function'")
+#'
+#'res <- optim(50, fw, method = "SANN",
+#'             control = list(maxit = 20000, temp = 20, parscale = 20))
+#'res
+#'## Now improve locally {typically only by a small bit}:
+#'(r2 <- optim(res$par, fw, method = "BFGS"))
+#'points(r2$par,  r2$value,  pch = 8, col = "red", cex = 2)
+#'
+#' ## corresponding C++ implementation:
+#' example4_wild_fun()
 #'@export
 example4_wild_fun <- function() {
     invisible(.Call('_roptim_example4_wild_fun', PACKAGE = 'roptim'))
