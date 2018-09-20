@@ -50,6 +50,23 @@ class RosenNoGrad : public Functor {
 
 //'@title Example 1: Minimize Rosenbrock function using BFGS
 //'@description Minimize Rosenbrock function using BFGS.
+//'@examples
+//'fr <- function(x) {   ## Rosenbrock Banana function
+//'  x1 <- x[1]
+//'  x2 <- x[2]
+//'  100 * (x2 - x1 * x1)^2 + (1 - x1)^2
+//'}
+//'grr <- function(x) { ## Gradient of 'fr'
+//'  x1 <- x[1]
+//'  x2 <- x[2]
+//'  c(-400 * x1 * (x2 - x1 * x1) - 2 * (1 - x1),
+//'    200 *      (x2 - x1 * x1))
+//'}
+//'res <- optim(c(-1.2,1), fr, grr, method = "BFGS", control = list(trace=TRUE), hessian = TRUE)
+//'res
+//'
+//'## corresponding C++ implementation:
+//'example1_rosen_bfgs()
 //'@export
 // [[Rcpp::export]]
 void example1_rosen_bfgs() {
@@ -67,6 +84,31 @@ void example1_rosen_bfgs() {
 
 //'@title Example 1: Minimize Rosenbrock function using other methods
 //'@description Minimize Rosenbrock function using other methods ("Nelder-Mead"/"CG"/ "L-BFGS-B"/"SANN").
+//'@examples
+//'fr <- function(x) {   ## Rosenbrock Banana function
+//'  x1 <- x[1]
+//'  x2 <- x[2]
+//'  100 * (x2 - x1 * x1)^2 + (1 - x1)^2
+//'}
+//'grr <- function(x) { ## Gradient of 'fr'
+//'  x1 <- x[1]
+//'  x2 <- x[2]
+//'  c(-400 * x1 * (x2 - x1 * x1) - 2 * (1 - x1),
+//'    200 *      (x2 - x1 * x1))
+//'}
+//'
+//'optim(c(-1.2,1), fr)
+//'
+//'## These do not converge in the default number of steps
+//'optim(c(-1.2,1), fr, grr, method = "CG")
+//'optim(c(-1.2,1), fr, grr, method = "CG", control = list(type = 2))
+//'
+//'optim(c(-1.2,1), fr, grr, method = "L-BFGS-B")
+//'
+//'optim(c(-1.2,1), fr, method = "SANN")
+//'
+//'## corresponding C++ implementation:
+//'example1_rosen_other_methods()
 //'@export
 // [[Rcpp::export]]
 void example1_rosen_other_methods() {
@@ -134,6 +176,17 @@ void example1_rosen_grad_hess_check() {
 
 //'@title Example 1: Minimize Rosenbrock function (with numerical gradient) using BFGS
 //'@description Minimize Rosenbrock function (with numerical gradient) using BFGS.
+//'@examples
+//'fr <- function(x) {   ## Rosenbrock Banana function
+//'  x1 <- x[1]
+//'  x2 <- x[2]
+//'  100 * (x2 - x1 * x1)^2 + (1 - x1)^2
+//'}
+//'
+//'optim(c(-1.2,1), fr, NULL, method = "BFGS")
+//'
+//'## corresponding C++ implementation:
+//'example1_rosen_nograd_bfgs()
 //'@export
 // [[Rcpp::export]]
 void example1_rosen_nograd_bfgs() {
@@ -196,6 +249,57 @@ class TSP : public Functor {
 //'@description Solve Travelling Salesman Problem (TSP) using SANN.
 //'@param distmat a distance matrix for storing all pair of locations.
 //'@param x initial route.
+//'@examples
+//'## Combinatorial optimization: Traveling salesman problem
+//'library(stats) # normally loaded
+//'
+//'eurodistmat <- as.matrix(eurodist)
+//'
+//'distance <- function(sq) {  # Target function
+//'  sq2 <- embed(sq, 2)
+//'  sum(eurodistmat[cbind(sq2[,2], sq2[,1])])
+//'}
+//'
+//'genseq <- function(sq) {  # Generate new candidate sequence
+//'  idx <- seq(2, NROW(eurodistmat)-1)
+//'  changepoints <- sample(idx, size = 2, replace = FALSE)
+//'  tmp <- sq[changepoints[1]]
+//'  sq[changepoints[1]] <- sq[changepoints[2]]
+//'  sq[changepoints[2]] <- tmp
+//'  sq
+//'}
+//'
+//'sq <- c(1:nrow(eurodistmat), 1)  # Initial sequence: alphabetic
+//'distance(sq)
+//'# rotate for conventional orientation
+//'loc <- -cmdscale(eurodist, add = TRUE)$points
+//'x <- loc[,1]; y <- loc[,2]
+//'s <- seq_len(nrow(eurodistmat))
+//'tspinit <- loc[sq,]
+//'
+//'plot(x, y, type = "n", asp = 1, xlab = "", ylab = "",
+//'     main = "initial solution of traveling salesman problem", axes = FALSE)
+//'arrows(tspinit[s,1], tspinit[s,2], tspinit[s+1,1], tspinit[s+1,2],
+//'       angle = 10, col = "green")
+//'text(x, y, labels(eurodist), cex = 0.8)
+//'
+//'## The original R optimization:
+//'## set.seed(123) # chosen to get a good soln relatively quickly
+//'## res <- optim(sq, distance, genseq, method = "SANN",
+//'##              control = list(maxit = 30000, temp = 2000, trace = TRUE,
+//'##              REPORT = 500))
+//'## res  # Near optimum distance around 12842
+//'
+//'## corresponding C++ implementation:
+//'set.seed(10)  # chosen to get a good soln relatively quickly
+//'res <- example2_sann_tsp(eurodistmat, sq)
+//'
+//'tspres <- loc[res$par,]
+//'plot(x, y, type = "n", asp = 1, xlab = "", ylab = "",
+//'     main = "optim() 'solving' traveling salesman problem", axes = FALSE)
+//'arrows(tspres[s,1], tspres[s,2], tspres[s+1,1], tspres[s+1,2],
+//'       angle = 10, col = "red")
+//'text(x, y, labels(eurodist), cex = 0.8)
 //'@export
 // [[Rcpp::export]]
 Rcpp::List example2_sann_tsp(arma::mat distmat, arma::vec x) {
@@ -206,10 +310,6 @@ Rcpp::List example2_sann_tsp(arma::mat distmat, arma::vec x) {
   opt.control.temp = 2000;
   opt.control.trace = true;
   opt.control.REPORT = 500;
-
-  // arma::vec x =
-  //     arma::linspace(1, eurodistmat.n_rows + 1, eurodistmat.n_rows + 1);
-  // x(eurodistmat.n_rows) = 1;
 
   opt.minimize(dist, x);
 
