@@ -17,6 +17,7 @@
 #define ROPTIM_H_
 
 #include <cassert>
+#include <cmath>
 #include <cstddef>
 
 #include <functional>
@@ -267,13 +268,13 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
     for (std::size_t i = 0; i != npar; ++i) {
       lower(i) = lower_(i) / func.os.parscale_(i);
       upper(i) = upper_(i) / func.os.parscale_(i);
-      if (!isfinite(lower(i))) {
-        if (!isfinite(upper(i)))
+      if (!std::isfinite(lower(i))) {
+        if (!std::isfinite(upper(i)))
           nbd(i) = 0;
         else
           nbd(i) = 3;
       } else {
-        if (!isfinite(upper(i)))
+        if (!std::isfinite(upper(i)))
           nbd(i) = 1;
         else
           nbd(i) = 2;
