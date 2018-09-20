@@ -1,11 +1,14 @@
 Package: roptim
 Type: Package
-Title: What the Package Does (Title Case)
+Title: General Purpose Optimization with C++
 Version: 0.1.0
 Author: Yi Pan [aut, cre]
 Maintainer: Yi Pan <ypan1988@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: This package provides a unified wrapper interface to the C codes of 
+    the five optimization algorithms ("Nelder-Mead", "BFGS", "CG", "L-BFGS-B" 
+    and "SANN") underlying optim function and enables users performing general 
+    purpose optimization tasks using C++ without reimplementing the optimization 
+    routines.
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
@@ -13,3 +16,5 @@ SystemRequirements: C++11
 Imports: Rcpp (>= 0.12.14)
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.0.1
+URL: https://github.com/ypan1988/roptim/
+BugReports: https://github.com/ypan1988/roptim/issues
