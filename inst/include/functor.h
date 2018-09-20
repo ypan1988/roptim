@@ -1,4 +1,17 @@
 // Copyright (c) 2018 Yi Pan <ypan1988@gmail.com>
+//
+//  This program is free software; you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation; either version 2 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  A copy of the GNU General Public License is available at
+//  https://www.R-project.org/Licenses/
 
 #ifndef FUNCTOR_H_
 #define FUNCTOR_H_
@@ -8,19 +21,19 @@
 namespace roptim {
 
 struct OptStruct {
-  bool has_grad_;
-  bool has_hess_;
+  bool has_grad_ = false;
+  bool has_hess_ = false;
   arma::vec ndeps_;       // tolerances for numerical derivatives
   double fnscale_ = 1.0;  // scaling for objective
   arma::vec parscale_;    // scaling for parameters
   int usebounds_ = 0;
   arma::vec lower_, upper_;
+  bool sann_use_custom_function_ = false;
 };
 
-//template <typename Derived>
 class Functor {
  public:
-  Functor() { //UpdateOptStruct();
+  Functor() {  // UpdateOptStruct();
   }
 
   virtual ~Functor() {}
@@ -40,27 +53,11 @@ class Functor {
   void ApproximateHessian(const arma::vec &par, arma::mat &hess);
 
   OptStruct os;
-
- // private:
- //  void UpdateOptStruct() {
- //    if (&Derived::Gradient == &Functor::Gradient)
- //      os.has_grad_ = false;
- //    else
- //      os.has_grad_ = true;
- //
- //    if (&Derived::Hessian == &Functor::Hessian)
- //      os.has_hess_ = false;
- //    else
- //      os.has_hess_ = true;
- //  }
 };
 
-// template <typename Derived>
-// inline void Functor<Derived>::ApproximateGradient(const arma::vec &par,
-//                                                   arma::vec &grad) {
-inline void Functor::ApproximateGradient(const arma::vec &par, arma::vec &grad) {
-  if (os.parscale_.is_empty())
-    os.parscale_ = arma::ones<arma::vec>(par.size());
+inline void Functor::ApproximateGradient(const arma::vec &par,
+                                         arma::vec &grad) {
+  if (os.parscale_.is_empty()) os.parscale_ = arma::ones<arma::vec>(par.size());
   if (os.ndeps_.is_empty())
     os.ndeps_ = arma::ones<arma::vec>(par.size()) * 1e-3;
 
@@ -81,7 +78,7 @@ inline void Functor::ApproximateGradient(const arma::vec &par, arma::vec &grad) 
 
       x(i) = par(i) * os.parscale_(i);
     }
-  } else { // use bounds
+  } else {  // use bounds
     for (std::size_t i = 0; i != par.size(); ++i) {
       double epsused = os.ndeps_(i);
       double eps = os.ndeps_(i);
@@ -111,12 +108,8 @@ inline void Functor::ApproximateGradient(const arma::vec &par, arma::vec &grad) 
   }
 }
 
-// template <typename Derived>
-// inline void Functor<Derived>::ApproximateHessian(const arma::vec &par,
-//                                                  arma::mat &hess) {
 inline void Functor::ApproximateHessian(const arma::vec &par, arma::mat &hess) {
-  if (os.parscale_.is_empty())
-    os.parscale_ = arma::ones<arma::vec>(par.size());
+  if (os.parscale_.is_empty()) os.parscale_ = arma::ones<arma::vec>(par.size());
   if (os.ndeps_.is_empty())
     os.ndeps_ = arma::ones<arma::vec>(par.size()) * 1e-3;
 
@@ -133,7 +126,7 @@ inline void Functor::ApproximateHessian(const arma::vec &par, arma::mat &hess) {
     Gradient(dpar, df2);
     for (std::size_t j = 0; j != par.size(); ++j)
       hess(i, j) = os.fnscale_ * (df1(j) - df2(j)) /
-        (2 * eps * os.parscale_(i) * os.parscale_(j));
+                   (2 * eps * os.parscale_(i) * os.parscale_(j));
     dpar(i) = dpar(i) + eps;
   }
 
@@ -146,46 +139,21 @@ inline void Functor::ApproximateHessian(const arma::vec &par, arma::mat &hess) {
       hess(j, i) = tmp;
     }
   }
-  // hess = arma::zeros<arma::mat>(par.size(), par.size());
-
-  // const double kEpsilon = 1.0e-8;
-  // arma::vec par_h = par;
-  // arma::vec grad_old;
-  // Gradient(par, grad_old);
-  // for (arma::uword j = 0; j != par.size(); ++j) {
-  //   double temp = par_h(j);
-  //   double h = kEpsilon * abs(temp);
-  //   if (h == 0) h = kEpsilon;
-  //   par_h(j) = temp + h;
-  //   h = par_h(j) - temp;
-  //   arma::vec grad_h;
-  //   Gradient(par_h, grad_h);
-  //   par_h = temp;
-  //   for (arma::uword i = 0; i != par.size(); ++i) {
-  //     hess(i, j) = (grad_h(i) - grad_old(i)) / h;
-  //   }
-  // }
 }
 
-// template <typename Derived>
 inline double fminfn(int n, double *x, void *ex) {
-  //OptStruct os(static_cast<Derived *>(ex)->os);
   OptStruct os(static_cast<Functor *>(ex)->os);
 
   arma::vec par(x, n);
   par %= os.parscale_;
-  //return static_cast<Derived *>(ex)->operator()(par) / os.fnscale_;
   return static_cast<Functor *>(ex)->operator()(par) / os.fnscale_;
 }
 
-//template <typename Derived>
 inline void fmingr(int n, double *x, double *gr, void *ex) {
-  // OptStruct os(static_cast<Derived *>(ex)->os);
   OptStruct os(static_cast<Functor *>(ex)->os);
 
   arma::vec par(x, n), grad;
   par %= os.parscale_;
-  //static_cast<Derived *>(ex)->Gradient(par, grad);
   static_cast<Functor *>(ex)->Gradient(par, grad);
   for (auto i = 0; i != n; ++i)
     gr[i] = grad(i) * (os.parscale_(i) / os.fnscale_);

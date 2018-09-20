@@ -1,4 +1,17 @@
 // Copyright (c) 2018 Yi Pan <ypan1988@gmail.com>
+//
+//  This program is free software; you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation; either version 2 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  A copy of the GNU General Public License is available at
+//  https://www.R-project.org/Licenses/
 
 #ifndef SAMIN_H_
 #define SAMIN_H_
@@ -7,8 +20,8 @@
 #include <config.h>
 #endif
 
-#include <R_ext/Print.h>  // Rprintf
-#include <R_ext/Random.h> // random number generation in samin()
+#include <R_ext/Print.h>   // Rprintf
+#include <R_ext/Random.h>  // random number generation in samin()
 #include <Rinternals.h>
 
 #include <RcppArmadillo.h>
@@ -19,14 +32,13 @@ namespace internal {
 
 static double *vect(int n) { return (double *)R_alloc(n, sizeof(double)); }
 
-//template <typename Derived>
 inline void genptry(int n, double *p, double *ptry, double scale, void *ex) {
   SEXP s, x;
   int i;
   OptStruct OS = static_cast<Functor *>(ex)->os;
   PROTECT_INDEX ipx;
 
-  if (OS.has_grad_) {
+  if (OS.sann_use_custom_function_) {
     /* user defined generation of candidate point */
     PROTECT(x = Rf_allocVector(REALSXP, n));
     arma::vec x_copy = arma::zeros<arma::vec>(n);
@@ -50,9 +62,8 @@ inline void genptry(int n, double *p, double *ptry, double scale, void *ex) {
   }
 }
 
-inline
-void samin(int n, double *pb, double *yb, optimfn fminfn, int maxit, int tmax,
-           double ti, int trace, void *ex)
+inline void samin(int n, double *pb, double *yb, optimfn fminfn, int maxit,
+                  int tmax, double ti, int trace, void *ex)
 
 /* Given a starting point pb[0..n-1], simulated annealing minimization
 is performed on the function fminfn. The starting temperature
@@ -96,8 +107,7 @@ the function func).  Author: Adrian Trapletti
     k = 1;
     while ((k <= tmax) && (its < maxit)) /* iterate at constant temperature */
     {
-      genptry(n, p, ptry, scale * t,
-                       ex); /* generate new candidate point */
+      genptry(n, p, ptry, scale * t, ex); /* generate new candidate point */
       ytry = fminfn(n, ptry, ex);
       if (!R_FINITE(ytry)) ytry = big;
       dy = ytry - y;

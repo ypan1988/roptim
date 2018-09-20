@@ -12,3 +12,4 @@ LazyData: true
 SystemRequirements: C++11
 Imports: Rcpp (>= 0.12.14)
 LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 6.0.1

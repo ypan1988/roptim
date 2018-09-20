@@ -44,14 +44,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // example2_sann_tsp
-Rcpp::List example2_sann_tsp(arma::mat eurodistmat, arma::vec x);
-RcppExport SEXP _roptim_example2_sann_tsp(SEXP eurodistmatSEXP, SEXP xSEXP) {
+Rcpp::List example2_sann_tsp(arma::mat distmat, arma::vec x);
+RcppExport SEXP _roptim_example2_sann_tsp(SEXP distmatSEXP, SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type eurodistmat(eurodistmatSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type distmat(distmatSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(example2_sann_tsp(eurodistmat, x));
+    rcpp_result_gen = Rcpp::wrap(example2_sann_tsp(distmat, x));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -73,25 +73,6 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// example1_rosen_sann
-void example1_rosen_sann();
-RcppExport SEXP _roptim_example1_rosen_sann() {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    example1_rosen_sann();
-    return R_NilValue;
-END_RCPP
-}
-// rcpp_hello
-Rcpp::List rcpp_hello();
-RcppExport SEXP _roptim_rcpp_hello() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(rcpp_hello());
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_roptim_example1_rosen_bfgs", (DL_FUNC) &_roptim_example1_rosen_bfgs, 0},
@@ -101,8 +82,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_roptim_example2_sann_tsp", (DL_FUNC) &_roptim_example2_sann_tsp, 2},
     {"_roptim_example3_flb_25_dims_box_con", (DL_FUNC) &_roptim_example3_flb_25_dims_box_con, 0},
     {"_roptim_example4_wild_fun", (DL_FUNC) &_roptim_example4_wild_fun, 0},
-    {"_roptim_example1_rosen_sann", (DL_FUNC) &_roptim_example1_rosen_sann, 0},
-    {"_roptim_rcpp_hello", (DL_FUNC) &_roptim_rcpp_hello, 0},
     {NULL, NULL, 0}
 };
 

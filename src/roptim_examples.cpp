@@ -48,6 +48,9 @@ class RosenNoGrad : public Functor {
   }
 };
 
+//'@title Example 1: Minimize Rosenbrock function using BFGS
+//'@description Minimize Rosenbrock function using BFGS.
+//'@export
 // [[Rcpp::export]]
 void example1_rosen_bfgs() {
   Rosen rb;
@@ -62,6 +65,9 @@ void example1_rosen_bfgs() {
   opt.print();
 }
 
+//'@title Example 1: Minimize Rosenbrock function using other methods
+//'@description Minimize Rosenbrock function using other methods ("Nelder-Mead"/"CG"/ "L-BFGS-B"/"SANN").
+//'@export
 // [[Rcpp::export]]
 void example1_rosen_other_methods() {
   Rosen rb;
@@ -99,6 +105,9 @@ void example1_rosen_other_methods() {
   opt5.print();
 }
 
+//'@title Example 1: Gradient/Hessian checks for the implemented C++ class of Rosenbrock function
+//'@description Gradient/Hessian checks for the implemented C++ class of Rosenbrock function.
+//'@export
 // [[Rcpp::export]]
 void example1_rosen_grad_hess_check() {
   Rosen rb;
@@ -123,6 +132,9 @@ void example1_rosen_grad_hess_check() {
   hess2.print("approximate:");
 }
 
+//'@title Example 1: Minimize Rosenbrock function (with numerical gradient) using BFGS
+//'@description Minimize Rosenbrock function (with numerical gradient) using BFGS.
+//'@export
 // [[Rcpp::export]]
 void example1_rosen_nograd_bfgs() {
   RosenNoGrad rb;
@@ -180,10 +192,15 @@ class TSP : public Functor {
   arma::mat distmat_;
 };
 
+//'@title Example 1: Solve Travelling Salesman Problem (TSP) using SANN
+//'@description Solve Travelling Salesman Problem (TSP) using SANN.
+//'@param distmat a distance matrix for storing all pair of locations.
+//'@param x initial route.
+//'@export
 // [[Rcpp::export]]
-Rcpp::List example2_sann_tsp(arma::mat eurodistmat, arma::vec x) {
+Rcpp::List example2_sann_tsp(arma::mat distmat, arma::vec x) {
 
-  TSP dist(eurodistmat);
+  TSP dist(distmat);
   Roptim<TSP> opt("SANN");
   opt.control.maxit = 30000;
   opt.control.temp = 2000;
@@ -223,6 +240,9 @@ class Flb : public Functor {
   }
 };
 
+//'@title Example 3: Minimize a function using L-BFGS-B with 25-dimensional box constrained
+//'@description Minimize a function using L-BFGS-B with 25-dimensional box constrained.
+//'@export
 // [[Rcpp::export]]
 void example3_flb_25_dims_box_con() {
   Flb f;
@@ -255,6 +275,9 @@ class Fw : public Functor {
   }
 };
 
+//'@title Example 4: Minimize a "wild" function using SANN and BFGS
+//'@description Minimize a "wild" function using SANN and BFGS.
+//'@export
 // [[Rcpp::export]]
 void example4_wild_fun() {
   // "wild" function , global minimum at about -15.81515
@@ -274,24 +297,4 @@ void example4_wild_fun() {
   Roptim<Fw> opt2("BFGS");
   opt2.minimize(f, x);
   x.print();
-}
-
-// [[Rcpp::export]]
-void example1_rosen_sann() {
-  Rosen rb;
-  arma::vec x;
-
-  Roptim<Rosen> opt1("SANN");
-  opt1.control.trace = 1;
-  x = {-1.2, 1};
-  opt1.minimize(rb, x);
-  opt1.print();
-}
-
-// [[Rcpp::export]]
-Rcpp::List rcpp_hello() {
-  Rcpp::CharacterVector x = Rcpp::CharacterVector::create("foo", "bar");
-  Rcpp::NumericVector y = Rcpp::NumericVector::create(0.0, 1.0);
-  Rcpp::List z = Rcpp::List::create(x, y);
-  return z;
 }
