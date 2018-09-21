@@ -170,7 +170,7 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
   }
 
   // Sets the parameter size
-  int npar = par.size();
+  std::size_t npar = par.size();
 
   // Sets default value for parscale & ndeps (which depend on npar)
   if (control.parscale.is_empty())

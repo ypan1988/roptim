@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstddef>
 
 #include <algorithm>
 
@@ -221,7 +222,7 @@ class TSP : public Functor {
     idx2.for_each([](arma::uvec::elem_type &val) { val -= 1.0; });
 
     arma::vec distvec(sq.size() - 1);
-    for (int idx = 0; idx != distmat_.n_rows; ++idx) {
+    for (std::size_t idx = 0; idx != distmat_.n_rows; ++idx) {
       distvec(idx) = distmat_(idx1(idx), idx2(idx));
     }
 
