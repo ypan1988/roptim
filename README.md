@@ -1,4 +1,4 @@
-roptim: General Purpose Optimization in R with C++.
+roptim: General Purpose Optimization in R using C++.
 ====
 
 [![Build Status](https://travis-ci.org/ypan1988/roptim.svg?branch=master)](https://travis-ci.org/ypan1988/roptim)
