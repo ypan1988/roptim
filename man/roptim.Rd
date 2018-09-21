@@ -6,11 +6,9 @@
 \alias{roptim-package}
 \title{roptim}
 \description{
-This package provides a unified wrapper interface to the C codes of
-the five optimization algorithms ("Nelder-Mead", "BFGS", "CG", "L-BFGS-B"
-and "SANN") underlying optim function and enables users performing general
-purpose optimization tasks using C++ without reimplementing the optimization
-routines.
+Perform general purpose optimizations in R using C++. A unified wrapper
+interface is provided to call C functions of the five optimization algorithms
+('Nelder-Mead', 'BFGS', 'CG', 'L-BFGS-B' and 'SANN') underlying optim().
 }
 \author{
 Yi Pan
