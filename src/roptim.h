@@ -193,12 +193,12 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
     Rcpp::warning("one-dimensional optimization by Nelder-Mead is unreliable");
 
   // Sets default value for lower_
-  if (lower_.is_empty()) {
+  if (method_ == "L-BFGS-B" && lower_.is_empty()) {
     lower_ = arma::zeros<arma::vec>(npar);
     lower_.for_each([](arma::mat::elem_type &val) { val = R_NegInf; });
   }
   // Sets default value for upper_
-  if (upper_.is_empty()) {
+  if (method_ == "L-BFGS-B" && upper_.is_empty()) {
     upper_ = arma::zeros<arma::vec>(npar);
     upper_.for_each([](arma::mat::elem_type &val) { val = R_PosInf; });
   }
