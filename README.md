@@ -40,6 +40,8 @@ res
 
 Corresponding code written in `C++` using package `roptim` (file `demo.cpp`):
 ```cpp
+#include <cmath>  // std::pow
+
 #include <RcppArmadillo.h>
 // [[Rcpp::depends(RcppArmadillo)]]
 
