@@ -128,7 +128,7 @@ example1_rosen_nograd_bfgs <- function() {
 #'## res  # Near optimum distance around 12842
 #'
 #'## corresponding C++ implementation:
-#'set.seed(10)  # chosen to get a good soln relatively quickly
+#'set.seed(4)  # chosen to get a good soln relatively quickly
 #'res <- example2_tsp_sann(eurodistmat, sq)
 #'
 #'tspres <- loc[res$par,]

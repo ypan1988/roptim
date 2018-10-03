@@ -4,6 +4,8 @@
 #include <algorithm>
 
 #include <RcppArmadillo.h>
+#include <RcppArmadilloExtensions/sample.h>
+
 #include "roptim.h"
 
 using namespace roptim;
@@ -234,10 +236,9 @@ class TSP : public Functor {
 
     arma::vec idx =
         arma::linspace(2, distmat_.n_rows - 1, distmat_.n_rows - 2);
-    arma::vec idx_shuffled = arma::shuffle(idx);
-    idx_shuffled.for_each([](arma::vec::elem_type &val) { val -= 1.0; });
 
-    arma::vec changepoints = idx_shuffled.subvec(0, 1);
+    arma::vec changepoints = Rcpp::RcppArmadillo::sample(idx, 2, false);
+    changepoints.for_each([](arma::vec::elem_type &val) { val -= 1.0; });
 
     grad(changepoints(0)) = sq(changepoints(1));
     grad(changepoints(1)) = sq(changepoints(0));
@@ -293,7 +294,7 @@ class TSP : public Functor {
 //'## res  # Near optimum distance around 12842
 //'
 //'## corresponding C++ implementation:
-//'set.seed(10)  # chosen to get a good soln relatively quickly
+//'set.seed(4)  # chosen to get a good soln relatively quickly
 //'res <- example2_tsp_sann(eurodistmat, sq)
 //'
 //'tspres <- loc[res$par,]
