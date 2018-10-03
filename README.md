@@ -35,7 +35,7 @@ grr <- function(x) { ## Gradient of 'fr'
        200 *      (x2 - x1 * x1))
 }
 res <- optim(c(-1.2,1), fr, grr, method = "BFGS", control = list(trace=T), hessian = TRUE)
-
+res
 ```
 
 Corresponding code written in `C++` using package `roptim` (file `demo.cpp`):
@@ -84,6 +84,7 @@ void rosen_bfgs() {
 
 Compile and run the function in `R`:
 ```R
+library(Rcpp)
 sourceCpp("~/demo.cpp") # you may need to change the directory
 rosen_bfgs()
 ```
