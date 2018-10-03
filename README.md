@@ -6,6 +6,11 @@ roptim: General Purpose Optimization in R using C++.
 [![downloads](http://cranlogs.r-pkg.org/badges/roptim)](http://cranlogs.r-pkg.org/badges/roptim)
 [![total downloads](http://cranlogs.r-pkg.org/badges/grand-total/roptim)](http://cranlogs.r-pkg.org/badges/grand-total/roptim)
 
+## Features
+
+* Perform general purpose optimization in `R` using the `Armadillo` `C++` library for numerical linear algebra.
+* A unified wrapper interface is provided to call `C` functions of the five optimization algorithms (`Nelder-Mead`, `BFGS`, `CG`, `L-BFGS-B` and `SANN`) underlying `optim()`.
+
 ## Installation
 
 Get the development version from github:
