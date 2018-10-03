@@ -32,7 +32,7 @@ namespace internal {
 
 static double *vect(int n) { return (double *)R_alloc(n, sizeof(double)); }
 
-inline void genptry(int n, double *p, double *ptry, double scale, void *ex) {
+static void genptry(int n, double *p, double *ptry, double scale, void *ex) {
   SEXP s, x;
   int i;
   OptStruct OS = static_cast<Functor *>(ex)->os;
