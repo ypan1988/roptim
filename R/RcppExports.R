@@ -82,7 +82,7 @@ example1_rosen_nograd_bfgs <- function() {
     invisible(.Call('_roptim_example1_rosen_nograd_bfgs', PACKAGE = 'roptim'))
 }
 
-#'@title Example 1: Solve Travelling Salesman Problem (TSP) using SANN
+#'@title Example 2: Solve Travelling Salesman Problem (TSP) using SANN
 #'@description Solve Travelling Salesman Problem (TSP) using SANN.
 #'@param distmat a distance matrix for storing all pair of locations.
 #'@param x initial route.

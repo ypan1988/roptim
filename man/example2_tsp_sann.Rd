@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{example2_tsp_sann}
 \alias{example2_tsp_sann}
-\title{Example 1: Solve Travelling Salesman Problem (TSP) using SANN}
+\title{Example 2: Solve Travelling Salesman Problem (TSP) using SANN}
 \usage{
 example2_tsp_sann(distmat, x)
 }
