@@ -129,4 +129,4 @@ NULL
  -4.0000e+002  2.0000e+002
 ```
 
-More examples are provided in [src/roptim_examples.cpp](https://github.com/ypan1988/roptim/blob/master/src/roptim_examples.cpp).
+Note: more examples are provided in [src/roptim_examples.cpp](https://github.com/ypan1988/roptim/blob/master/src/roptim_examples.cpp).
