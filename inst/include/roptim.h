@@ -65,7 +65,7 @@ class Roptim {
 
  public:
   struct RoptimControl {
-    int trace = 0;
+    std::size_t trace = 0;
     double fnscale = 1.0;
     arma::vec parscale;
     arma::vec ndeps;
@@ -179,9 +179,7 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
     control.ndeps = arma::ones<arma::vec>(npar) * 1e-3;
 
   // Checks control variable trace
-  if (control.trace < 0)
-    Rcpp::warning("read the documentation for 'trace' more carefully");
-  else if (method_ == "SANN" && control.trace && control.REPORT == 0)
+  if (method_ == "SANN" && control.trace && control.REPORT == 0)
     Rcpp::stop("'trace != 0' needs 'REPORT >= 1'");
 
   // Note that "method L-BFGS-B uses 'factr' (and 'pgtol') instead of 'reltol'
