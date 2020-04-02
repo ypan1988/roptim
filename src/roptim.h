@@ -65,7 +65,7 @@ class Roptim {
 
  public:
   struct RoptimControl {
-    int trace = 0;
+    std::size_t trace = 0;
     double fnscale = 1.0;
     arma::vec parscale;
     arma::vec ndeps;
@@ -159,8 +159,6 @@ inline void Roptim<Derived>::print() const {
 
 template <typename Derived>
 inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
-  int debug = 0;
-
   // PART 1: optim()
 
   // Checks if lower and upper bounds is used
@@ -179,9 +177,7 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
     control.ndeps = arma::ones<arma::vec>(npar) * 1e-3;
 
   // Checks control variable trace
-  if (control.trace < 0)
-    Rcpp::warning("read the documentation for 'trace' more carefully");
-  else if (method_ == "SANN" && control.trace && control.REPORT == 0)
+  if (method_ == "SANN" && control.trace && control.REPORT == 0)
     Rcpp::stop("'trace != 0' needs 'REPORT >= 1'");
 
   // Note that "method L-BFGS-B uses 'factr' (and 'pgtol') instead of 'reltol'
@@ -220,8 +216,6 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
   dpar = par / control.parscale;
 
   if (method_ == "Nelder-Mead") {
-    if (debug) std::cout << "Nelder-Mead:" << std::endl;
-
     nmmin(npar, dpar.memptr(), opar.memptr(), &val_, fminfn, &fail_,
           control.abstol, control.reltol, &func, control.alpha, control.beta,
           control.gamma, control.trace, &fncount_, control.maxit);
@@ -230,8 +224,6 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
     grcount_ = 0;
 
   } else if (method_ == "SANN") {
-    if (debug) std::cout << "SANN:" << std::endl;
-
     int trace = control.trace;
     if (trace) trace = control.REPORT;
 
@@ -245,8 +237,6 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
     grcount_ = 0;
 
   } else if (method_ == "BFGS") {
-    if (debug) std::cout << "BFGS:" << std::endl;
-
     arma::ivec mask = arma::ones<arma::ivec>(npar);
     vmmin(npar, dpar.memptr(), &val_, fminfn, fmingr, control.maxit,
           control.trace, mask.memptr(), control.abstol, control.reltol,

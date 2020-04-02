@@ -159,8 +159,6 @@ inline void Roptim<Derived>::print() const {
 
 template <typename Derived>
 inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
-  int debug = 0;
-
   // PART 1: optim()
 
   // Checks if lower and upper bounds is used
@@ -218,8 +216,6 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
   dpar = par / control.parscale;
 
   if (method_ == "Nelder-Mead") {
-    if (debug) std::cout << "Nelder-Mead:" << std::endl;
-
     nmmin(npar, dpar.memptr(), opar.memptr(), &val_, fminfn, &fail_,
           control.abstol, control.reltol, &func, control.alpha, control.beta,
           control.gamma, control.trace, &fncount_, control.maxit);
@@ -228,8 +224,6 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
     grcount_ = 0;
 
   } else if (method_ == "SANN") {
-    if (debug) std::cout << "SANN:" << std::endl;
-
     int trace = control.trace;
     if (trace) trace = control.REPORT;
 
@@ -243,8 +237,6 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
     grcount_ = 0;
 
   } else if (method_ == "BFGS") {
-    if (debug) std::cout << "BFGS:" << std::endl;
-
     arma::ivec mask = arma::ones<arma::ivec>(npar);
     vmmin(npar, dpar.memptr(), &val_, fminfn, fmingr, control.maxit,
           control.trace, mask.memptr(), control.abstol, control.reltol,
