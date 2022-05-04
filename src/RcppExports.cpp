@@ -7,13 +7,20 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // example1_rosen_bfgs
-void example1_rosen_bfgs();
-RcppExport SEXP _roptim_example1_rosen_bfgs() {
+Rcpp::List example1_rosen_bfgs(bool print);
+RcppExport SEXP _roptim_example1_rosen_bfgs(SEXP printSEXP) {
 BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    example1_rosen_bfgs();
-    return R_NilValue;
+    Rcpp::traits::input_parameter< bool >::type print(printSEXP);
+    rcpp_result_gen = Rcpp::wrap(example1_rosen_bfgs(print));
+    return rcpp_result_gen;
 END_RCPP
 }
 // example1_rosen_other_methods
@@ -75,7 +82,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_roptim_example1_rosen_bfgs", (DL_FUNC) &_roptim_example1_rosen_bfgs, 0},
+    {"_roptim_example1_rosen_bfgs", (DL_FUNC) &_roptim_example1_rosen_bfgs, 1},
     {"_roptim_example1_rosen_other_methods", (DL_FUNC) &_roptim_example1_rosen_other_methods, 0},
     {"_roptim_example1_rosen_grad_hess_check", (DL_FUNC) &_roptim_example1_rosen_grad_hess_check, 0},
     {"_roptim_example1_rosen_nograd_bfgs", (DL_FUNC) &_roptim_example1_rosen_nograd_bfgs, 0},

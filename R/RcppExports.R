@@ -21,8 +21,8 @@
 #'## corresponding C++ implementation:
 #'example1_rosen_bfgs()
 #'@export
-example1_rosen_bfgs <- function() {
-    invisible(.Call('_roptim_example1_rosen_bfgs', PACKAGE = 'roptim'))
+example1_rosen_bfgs <- function(print = TRUE) {
+    .Call('_roptim_example1_rosen_bfgs', PACKAGE = 'roptim', print)
 }
 
 #'@title Example 1: Minimize Rosenbrock function using other methods

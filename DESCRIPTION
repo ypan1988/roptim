@@ -17,5 +17,8 @@ LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.0.1
 URL: https://github.com/ypan1988/roptim/
 BugReports: https://github.com/ypan1988/roptim/issues
-Suggests: R.rsp
+Suggests:
+    R.rsp,
+    testthat (>= 3.0.0)
 VignetteBuilder: R.rsp
+Config/testthat/edition: 3
