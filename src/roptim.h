@@ -237,7 +237,7 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
     grcount_ = 0;
 
   } else if (method_ == "BFGS") {
-    arma::ivec mask = arma::ones<arma::ivec>(npar);
+    arma::Col<int> mask = arma::ones<arma::Col<int>>(npar);
     vmmin(npar, dpar.memptr(), &val_, fminfn, fmingr, control.maxit,
           control.trace, mask.memptr(), control.abstol, control.reltol,
           control.REPORT, &func, &fncount_, &grcount_, &fail_);
@@ -252,7 +252,7 @@ inline void Roptim<Derived>::minimize(Derived &func, arma::vec &par) {
   } else if (method_ == "L-BFGS-B") {
     arma::vec lower(npar);
     arma::vec upper(npar);
-    arma::ivec nbd = arma::zeros<arma::ivec>(npar);
+    arma::Col<int> nbd = arma::zeros<arma::Col<int>>(npar);
     char msg[60];
 
     for (std::size_t i = 0; i != npar; ++i) {
