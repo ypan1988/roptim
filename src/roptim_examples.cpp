@@ -54,6 +54,7 @@ class RosenNoGrad : public Functor {
 
 //'@title Example 1: Minimize Rosenbrock function using BFGS
 //'@description Minimize Rosenbrock function using BFGS.
+//'@param print whether the results should be printed.
 //'@examples
 //'fr <- function(x) {   ## Rosenbrock Banana function
 //'  x1 <- x[1]

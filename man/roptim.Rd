@@ -3,7 +3,6 @@
 \docType{package}
 \name{roptim}
 \alias{roptim}
-\alias{roptim-package}
 \title{roptim}
 \description{
 Perform general purpose optimization in R using C++. A unified wrapper

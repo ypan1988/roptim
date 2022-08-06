@@ -4,7 +4,10 @@
 \alias{example1_rosen_bfgs}
 \title{Example 1: Minimize Rosenbrock function using BFGS}
 \usage{
-example1_rosen_bfgs()
+example1_rosen_bfgs(print = TRUE)
+}
+\arguments{
+\item{print}{whether the results should be printed.}
 }
 \description{
 Minimize Rosenbrock function using BFGS.
