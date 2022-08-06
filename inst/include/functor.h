@@ -152,7 +152,7 @@ inline double fminfn(int n, double *x, void *ex) {
 inline void fmingr(int n, double *x, double *gr, void *ex) {
   OptStruct os(static_cast<Functor *>(ex)->os);
 
-  arma::vec par(x, n), grad;
+  arma::vec par(x, n), grad(n);
   par %= os.parscale_;
   static_cast<Functor *>(ex)->Gradient(par, grad);
   for (auto i = 0; i != n; ++i)
