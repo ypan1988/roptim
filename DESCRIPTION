@@ -10,7 +10,6 @@ Description: Perform general purpose optimization in R using C++. A unified
     optim().
 License: GPL (>= 2)
 Encoding: UTF-8
-SystemRequirements: C++11
 Imports: Rcpp (>= 0.12.14)
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 7.1.1
